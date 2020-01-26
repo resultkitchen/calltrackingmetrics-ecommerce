@@ -1,0 +1,12 @@
+{
+    "name": "insightwhale/resultkitchen",
+    "authors": [
+        {
+            "name": "Result Kitchen / Insight Whale",
+            "email": "david@resultkitchen.com"
+        }
+    ],
+    "require": {
+        "rmccue/requests": "^1.7"
+    }
+}
