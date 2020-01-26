@@ -6,12 +6,12 @@ include 'vendor/autoload.php';
 // Configuration
 //
 // Call Tracking Metrics Account ID
-$accountId = '[Your Call Tracking Metrics Account ID]';
+$accountId = '208655';
 // Call Tracking Metrics Api Key
-$apiAuthKey = '[Your Call Tracking Metrics API Key';
+$apiAuthKey = 'YTIwODY1NWQ3ZGNiY2M5NTRjOTc5YzViODg1ODU5MjY1Yjc4MDk2NDpkMzhhYzQwNDdkOWFmY2EyN2UwZjY5ZGI3ZGYyMTA5OTE4ZDE=';
 //
 // Orders CSV Url
-$ordersUrl = '[Your Orders URL Order]';
+$ordersUrl = 'http://dev.globalsempartners.com/medicalsupplydepot/Medical_Supply_Depot_Phone_Orders_'.date('m-d-Y').'.csv';
 
 
 // Read orders file & parse it as csv into array

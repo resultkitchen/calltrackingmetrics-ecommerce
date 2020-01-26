@@ -5,8 +5,14 @@ include 'vendor/autoload.php';
 
 // Configuration
 //
-// Google Analytics ID
-$tid = 'UA-449437-2';
+// Bing Ads Tracker ID
+$ti = '4021148';
+//
+// Bing Ads Event Category
+$ec = 'Offline';
+//
+// Bing Ads Event Action
+$ea = 'Conversion';
 //
 // Call Tracking Metrics Account ID
 $accountId = '208655';
@@ -19,6 +25,22 @@ $ordersUrl = 'http://dev.globalsempartners.com/medicalsupplydepot/Medical_Supply
 // Currency
 $currency = 'USD';
 
+function getGUID(){
+    if (function_exists('com_create_guid')){
+        return com_create_guid();
+    }else{
+        mt_srand((double)microtime()*10000);
+        $charid = strtoupper(md5(uniqid(rand(), true)));
+        $hyphen = chr(45);// "-"
+        $uuid = substr($charid, 0, 8).$hyphen
+            .substr($charid, 8, 4).$hyphen
+            .substr($charid,12, 4).$hyphen
+            .substr($charid,16, 4).$hyphen
+            .substr($charid,20,12);
+
+        return strtolower($uuid);
+    }
+}
 
 // Read orders file & parse it as csv into array
 $ordersCSVFile = Requests::get($ordersUrl);
@@ -40,22 +62,9 @@ foreach($orderCSVCollection as $order) {
     if (!key_exists($order[2], $ordersCollection)) {
         $ordersCollection[$order[2]] = array(
             'phone' => $order[1],
-            'products' => array(),
-            'tax'   => $order[10],
-            'shipping' => $order[11],
             'total_cost' => 0
         );
     }
-
-    // Add product to transaction
-    $ordersCollection[$order[2]]['products'][] = array(
-        'name'  => $order[3],
-        'sku'   => $order[4],
-        'quantity'  => $order[5],
-        'category'  => $order[14],
-        'cost'  => $order[12],
-        'total_cost' => $order[13]
-    );
 
     if (!$order[13]) {
         $order[13] = 0;
@@ -63,6 +72,8 @@ foreach($orderCSVCollection as $order) {
 
     // Increase total cost for transaction
     $ordersCollection[$order[2]]['total_cost'] += $order[13];
+
+    echo $order[13], "\r\n";
 }
 
 
@@ -79,12 +90,17 @@ foreach ($ordersCollection as $key => $order) {
 
     $clientDetails = json_decode($clientDetails->body, true);
 
-    // Define random cid for user
-    $ordersCollection[$key]['cid'] = 'GA1.2.'.rand(1000000000, 2147483647) . '.' . time();
 
     // But, if user is found in Call Tracking Metrics, define cid from API response
     if (count($clientDetails['calls']) != 0) {
-         $ordersCollection[$key]['cid'] = $clientDetails['calls'][0]['ga']['cid'];
+        if (isset($clientDetails['calls'][0]['ms'])) {
+            $ordersCollection[$key]['msclkid'] = $clientDetails['calls'][0]['ms']['msclkid'];
+        } else {
+            unset($ordersCollection[$key]);
+        }
+    } else {
+
+        unset($ordersCollection[$key]);
     }
 
     // Sleep to prevent requests limit
@@ -97,44 +113,26 @@ foreach($ordersCollection as $key => $order) {
 
     // Send transaction info
     $orderDetail = array(
-        'v' => '1',
-        't' => 'transaction',
-        'tid' => $tid,
-        'cid' => str_replace('GA1.2.', '', $order['cid']),
+        'ti' => $ti,
+        'Ver' => '2',
+        'mid' => $mid,
+        'msclkid' => $order['msclkid'].'-0',
+        'rn' => rand(100000,999999),
 
-        'ti' => $key,
-        'tt' => $order['tax'],
-        'tr' => $order['total_cost'],
-        'ts' => $order['shipping'],
-        'cu' => $currency
+        'ec' => $ec,
+        'ea' => $ea,
+        'en' => 'Y',
+        'evt' => 'custom',
+
+        'gv' => 500,
+        'gc' => $currency
     );
 
-    echo Requests::get('https://www.google-analytics.com/collect?'.http_build_query($orderDetail))->url;
-
-    // Send products info
-    foreach ($order['products'] as $product) {
-
-        $orderItem = array(
-            'v' => '1',
-            't' => 'item',
-            'tid' => $tid,
-            'cid' => str_replace('GA1.2.', '', $order['cid']),
-
-            'ti' => $key,
-
-            "ic" => $product['sku'],
-            "in" => $product['name'],
-            "ip" => $product['cost'],
-            "iv" => $product['category'],
-            "iq" => $product['quantity']
-        );
-
-
-        echo Requests::get('https://www.google-analytics.com/collect?'.http_build_query($orderItem))->url;
-    }
+    echo Requests::get('https://bat.bing.com/action/0?'.http_build_query($orderDetail), ['Referer' => 'https://www.medicalsupplydepot.com/', 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36'])->url;
 
 }
 
 
 
 // Done
+//1871
