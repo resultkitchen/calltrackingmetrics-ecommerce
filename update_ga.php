@@ -6,15 +6,15 @@ include 'vendor/autoload.php';
 // Configuration
 //
 // Google Analytics ID
-$tid = 'UA-449437-2';
+$tid = '[your google analytics id here]';
 //
 // Call Tracking Metrics Account ID
-$accountId = '208655';
+$accountId = '[call tracking metrics account id]';
 // Call Tracking Metrics Api Key
-$apiAuthKey = 'YTIwODY1NWQ3ZGNiY2M5NTRjOTc5YzViODg1ODU5MjY1Yjc4MDk2NDpkMzhhYzQwNDdkOWFmY2EyN2UwZjY5ZGI3ZGYyMTA5OTE4ZDE=';
+$apiAuthKey = '[call tracking metrics API key]';
 //
 // Orders CSV Url
-$ordersUrl = 'http://dev.globalsempartners.com/medicalsupplydepot/Medical_Supply_Depot_Phone_Orders_'.date('m-d-Y').'.csv';
+$ordersUrl = '[url for daily orders sheet]';
 //
 // Currency
 $currency = 'USD';
