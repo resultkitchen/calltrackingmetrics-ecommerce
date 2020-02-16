@@ -6,7 +6,7 @@ include 'vendor/autoload.php';
 // Configuration
 //
 // Bing Ads Tracker ID
-$ti = '4021148';
+$ti = '[bingads tracker id here]';
 //
 // Bing Ads Event Category
 $ec = 'Offline';
@@ -15,12 +15,12 @@ $ec = 'Offline';
 $ea = 'Conversion';
 //
 // Call Tracking Metrics Account ID
-$accountId = '208655';
+$accountId = '[your call tracking metrics account here';
 // Call Tracking Metrics Api Key
-$apiAuthKey = 'YTIwODY1NWQ3ZGNiY2M5NTRjOTc5YzViODg1ODU5MjY1Yjc4MDk2NDpkMzhhYzQwNDdkOWFmY2EyN2UwZjY5ZGI3ZGYyMTA5OTE4ZDE=';
+$apiAuthKey = '[api authorization key here]';
 //
 // Orders CSV Url
-$ordersUrl = 'http://dev.globalsempartners.com/medicalsupplydepot/Medical_Supply_Depot_Phone_Orders_'.date('m-d-Y').'.csv';
+$ordersUrl = '[url for todays (or yesterdays) orders]';
 //
 // Currency
 $currency = 'USD';
